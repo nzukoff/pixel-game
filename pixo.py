@@ -18,19 +18,23 @@ for idx, center in enumerate(kmeans.cluster_centers_):
 
 data = np.array([(255,255,255) for d in range(len(pix_val))])
 guesses = []
+guesses_remaining = np.unique(y_kmeans)
 while True:
     chosen_number = int(input("Pick a number: "))
-    if chosen_number not in guesses:
+    # if chosen_number not in guesses:
+    if chosen_number in guesses_remaining:
         chosen_indices = np.where(y_kmeans == chosen_number)
         data[chosen_indices] = pix_val[chosen_indices]
         tupled_data = [(d[0], d[1], d[2]) for d in data]
-        guesses.append(chosen_number)
+        # guesses.append(chosen_number)
+        guesses_remaining = np.delete(guesses_remaining, np.where(guesses_remaining == chosen_number))
         image = Image.new("RGB", im.size)
         image.putdata(tupled_data)
         image.show()
-        print(guesses)
-    elif chosen_number in guesses:
-        print("ALREADY GUESSED THAT")
+        print("REMAINING GUESSES ARE ", guesses_remaining)
+    elif chosen_number not in guesses_remaining:
+        # print("ALREADY GUESSED THAT")
+        print("REMAINING GUESSES ARE ", guesses_remaining)
 
 ## CREATES DATA FOR SPECIFIC LABELS
 # data = []

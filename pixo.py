@@ -8,19 +8,39 @@ def load_image(path):
     pix_val = np.array(list(im.getdata()))
     return im.size, pix_val
 
-def cluster(pixels):
-    kmeans = KMeans(n_clusters = 8)
+def cluster(pixels, num_clusters):
+    kmeans = KMeans(n_clusters = num_clusters)
     y_kmeans = kmeans.fit_predict(pixels)
     return y_kmeans, kmeans.cluster_centers_
 
-def find_and_draw_color_categories(cluster_centers):
-    for idx, center in enumerate(cluster_centers):
-        color = (int(center[0]), int(center[1]), int(center[2]))
+def find_and_draw_color_categories(cluster_centers, pixel_labels, pixel_values):
+    # for idx, center in enumerate(cluster_centers):
+    #     color = (int(center[0]), int(center[1]), int(center[2]))
+    #     img = Image.new('RGB', (300, 200), color)
+    #     d = ImageDraw.Draw(img)
+    #     d.text((10,10), str(idx), fill=(0,0,0))
+    #     img.show()
+
+    pix_val_dict = {}
+    unique_labels = np.unique(pixel_labels)
+    for label in unique_labels:
+        indices = np.where(pixel_labels == label)
+        pix_val_dict[label] = pixel_values[indices]
+
+    color_dict = {}
+    for label, all_rgb_vals in pix_val_dict.items():
+        length = len(all_rgb_vals)
+        r = int(np.sqrt(np.sum([color[0]**2 for color in all_rgb_vals])/length))
+        g = int(np.sqrt(np.sum([color[1]**2 for color in all_rgb_vals])/length))
+        b = int(np.sqrt(np.sum([color[2]**2 for color in all_rgb_vals])/length))
+        color_dict[label] = (r, g, b)
+
+    for label, color in color_dict.items():
         img = Image.new('RGB', (300, 200), color)
         d = ImageDraw.Draw(img)
-        d.text((10,10), str(idx), fill=(0,0,0))
+        d.text((10,10), str(label), fill=(0,0,0))
         img.show()
-
+    
 def initialize_data():
     data = np.array([(255,255,255) for d in range(len(pixel_values))])
     return data
@@ -31,16 +51,18 @@ def update_data(data, pixel_values, pixel_labels, chosen_number):
     tupled_data = [(d[0], d[1], d[2]) for d in data]
     return tupled_data
         
-def play_game(tupled_data, chosen_number, image_size):
-    ## GUESSES AREN'T UPDATING BETWEEN PLAYS
+def initialize_guesses(pixel_labels):
     guesses_remaining = np.unique(pixel_labels)
-    
+    return guesses_remaining
+
+def play_game(tupled_data, chosen_number, image_size, guesses_remaining):
     if chosen_number in guesses_remaining:
         guesses_remaining = np.delete(guesses_remaining, np.where(guesses_remaining == chosen_number))
         image = Image.new("RGB", image_size)
         image.putdata(tupled_data)
         image.show()
         print("REMAINING GUESSES ARE ", guesses_remaining)
+        return guesses_remaining
     elif chosen_number not in guesses_remaining:
         print("REMAINING GUESSES ARE ", guesses_remaining)
 
@@ -73,10 +95,14 @@ def play_game(tupled_data, chosen_number, image_size):
 if __name__ == '__main__':
     path = './mms.jpg'
     image_size, pixel_values = load_image(path)
-    pixel_labels, cluster_centers = cluster(pixel_values)
-    find_and_draw_color_categories(cluster_centers)
+    num_clusters = 8
+    pixel_labels, cluster_centers = cluster(pixel_values, num_clusters)
+    find_and_draw_color_categories(cluster_centers, pixel_labels, pixel_values)
     data = initialize_data()
-    while True:
+    guesses_remaining = initialize_guesses(pixel_labels)
+    while len(guesses_remaining) != 0:
         chosen_number = int(input("Pick a number: "))
         tupled_data = update_data(data, pixel_values, pixel_labels, chosen_number)
-        play_game(tupled_data, chosen_number, image_size)
+        guesses_remaining = play_game(tupled_data, chosen_number, image_size, guesses_remaining)
+    if len(guesses_remaining) == 0:
+            print("GAME OVER")

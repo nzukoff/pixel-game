@@ -1,39 +1,47 @@
 from PIL import Image, ImageDraw
 from sklearn.cluster import KMeans
+from collections import Counter
 import numpy as np
 
-im = Image.open('./worms.jpg') 
-pix = im.load()
-pix_val = np.array(list(im.getdata()))
+def load_image(path):
+    im = Image.open(path) 
+    pix_val = np.array(list(im.getdata()))
+    return im.size, pix_val
 
-kmeans = KMeans(n_clusters = 8)
-y_kmeans = kmeans.fit_predict(pix_val)
+def cluster(pixels):
+    kmeans = KMeans(n_clusters = 8)
+    y_kmeans = kmeans.fit_predict(pixels)
+    return y_kmeans, kmeans.cluster_centers_
 
-for idx, center in enumerate(kmeans.cluster_centers_):
-    color = (int(center[0]), int(center[1]), int(center[2]))
-    img = Image.new('RGB', (300, 200), color)
-    d = ImageDraw.Draw(img)
-    d.text((10,10), str(idx), fill=(0,0,0))
-    img.show()
+def find_and_draw_color_categories(cluster_centers):
+    for idx, center in enumerate(cluster_centers):
+        color = (int(center[0]), int(center[1]), int(center[2]))
+        img = Image.new('RGB', (300, 200), color)
+        d = ImageDraw.Draw(img)
+        d.text((10,10), str(idx), fill=(0,0,0))
+        img.show()
 
-data = np.array([(255,255,255) for d in range(len(pix_val))])
-guesses = []
-guesses_remaining = np.unique(y_kmeans)
-while True:
-    chosen_number = int(input("Pick a number: "))
-    # if chosen_number not in guesses:
+def initialize_data():
+    data = np.array([(255,255,255) for d in range(len(pixel_values))])
+    return data
+
+def update_data(data, pixel_values, pixel_labels, chosen_number):
+    chosen_indices = np.where(pixel_labels == chosen_number)
+    data[chosen_indices] = pixel_values[chosen_indices]
+    tupled_data = [(d[0], d[1], d[2]) for d in data]
+    return tupled_data
+        
+def play_game(tupled_data, chosen_number, image_size):
+    ## GUESSES AREN'T UPDATING BETWEEN PLAYS
+    guesses_remaining = np.unique(pixel_labels)
+    
     if chosen_number in guesses_remaining:
-        chosen_indices = np.where(y_kmeans == chosen_number)
-        data[chosen_indices] = pix_val[chosen_indices]
-        tupled_data = [(d[0], d[1], d[2]) for d in data]
-        # guesses.append(chosen_number)
         guesses_remaining = np.delete(guesses_remaining, np.where(guesses_remaining == chosen_number))
-        image = Image.new("RGB", im.size)
+        image = Image.new("RGB", image_size)
         image.putdata(tupled_data)
         image.show()
         print("REMAINING GUESSES ARE ", guesses_remaining)
     elif chosen_number not in guesses_remaining:
-        # print("ALREADY GUESSED THAT")
         print("REMAINING GUESSES ARE ", guesses_remaining)
 
 ## CREATES DATA FOR SPECIFIC LABELS
@@ -61,3 +69,14 @@ while True:
 # for color in most_common_colors:    
 #     img = Image.new('RGB', (300, 200), color)
 #     img.show()
+
+if __name__ == '__main__':
+    path = './mms.jpg'
+    image_size, pixel_values = load_image(path)
+    pixel_labels, cluster_centers = cluster(pixel_values)
+    find_and_draw_color_categories(cluster_centers)
+    data = initialize_data()
+    while True:
+        chosen_number = int(input("Pick a number: "))
+        tupled_data = update_data(data, pixel_values, pixel_labels, chosen_number)
+        play_game(tupled_data, chosen_number, image_size)

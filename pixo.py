@@ -14,8 +14,10 @@ def cluster(pixels, num_clusters):
     return y_kmeans, kmeans.cluster_centers_
 
 def find_and_draw_color_categories(cluster_centers, pixel_labels, pixel_values):
+    # test_color = ()
     # for idx, center in enumerate(cluster_centers):
     #     color = (int(center[0]), int(center[1]), int(center[2]))
+    #     # test_color = color
     #     img = Image.new('RGB', (300, 200), color)
     #     d = ImageDraw.Draw(img)
     #     d.text((10,10), str(idx), fill=(0,0,0))
@@ -40,6 +42,10 @@ def find_and_draw_color_categories(cluster_centers, pixel_labels, pixel_values):
         d = ImageDraw.Draw(img)
         d.text((10,10), str(label), fill=(0,0,0))
         img.show()
+    # print(test_color)
+    # print(color_dict[3])
+    # print(color_dict[3] == test_color)
+
     
 def initialize_data():
     data = np.array([(255,255,255) for d in range(len(pixel_values))])
@@ -55,7 +61,9 @@ def initialize_guesses(pixel_labels):
     guesses_remaining = np.unique(pixel_labels)
     return guesses_remaining
 
-def play_game(tupled_data, chosen_number, image_size, guesses_remaining):
+def play_game(tupled_data, chosen_number, image_size, guesses_remaining, pixel_labels):
+    count_labels = Counter(pixel_labels)
+    print(count_labels)
     if chosen_number in guesses_remaining:
         guesses_remaining = np.delete(guesses_remaining, np.where(guesses_remaining == chosen_number))
         image = Image.new("RGB", image_size)
@@ -103,6 +111,6 @@ if __name__ == '__main__':
     while len(guesses_remaining) != 0:
         chosen_number = int(input("Pick a number: "))
         tupled_data = update_data(data, pixel_values, pixel_labels, chosen_number)
-        guesses_remaining = play_game(tupled_data, chosen_number, image_size, guesses_remaining)
+        guesses_remaining = play_game(tupled_data, chosen_number, image_size, guesses_remaining, pixel_labels)
     if len(guesses_remaining) == 0:
             print("GAME OVER")

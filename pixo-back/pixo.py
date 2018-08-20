@@ -5,28 +5,48 @@ import numpy as np
 from flask import Flask
 from flask_cors import CORS
 from flask import jsonify
+from flask import request
 
 app = Flask(__name__)
 CORS(app)
+
+pix_values=None
+pix_labels=None
 
 @app.route('/load')
 def load_image(path = './mms.jpg'):
     im = Image.open(path) 
     pix_val = np.array(list(im.getdata()))
+    global pix_values
 
     pixel_list = []
     for color in pix_val:
         for value in color:
             pixel_list.append(int(value))
         pixel_list.append(255)
+    # print("PIX_VAL ", pix_val)
+    pix_values = pix_val
+    # return im.size, pix_val
     return jsonify(image_size=im.size, pixel_values=pixel_list)
 
-    # return im.size, pix_val
+@app.route('/options')
+def cluster_colors():
+    global pix_values
+    global pix_labels
+    # incoming = request.get_json()
+    # num_clusters = incoming["num_options"]
+    kmeans = KMeans(n_clusters = 4)
+    pix_labels = kmeans.fit_predict(pix_values)
+    pix_val_dict = {}
+    for idx, center in enumerate(kmeans.cluster_centers_):
+        pix_val_dict[idx] = (int(center[0]), int(center[1]), int(center[2]))
+    return jsonify(color_options=pix_val_dict)
 
 def cluster(pixels, num_clusters):
     kmeans = KMeans(n_clusters = num_clusters)
     y_kmeans = kmeans.fit_predict(pixels)
     return y_kmeans, kmeans.cluster_centers_
+    
 
 def find_and_draw_color_categories(cluster_centers, pixel_labels, pixel_values):
     # test_color = ()

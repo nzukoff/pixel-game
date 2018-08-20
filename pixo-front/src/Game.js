@@ -7,12 +7,12 @@ class Game extends Component {
         super(props)
         this.state={}
         this.doInitialFetch = this.doInitialFetch.bind(this);
-        // this.createImage = this.createImage.bind(this);
+        this.getColorOptions = this.getColorOptions.bind(this);
     }
 
     componentDidMount(){
-        this.doInitialFetch(this.props.host);
-        // this.createImage(this.state.pixels, this.state.image_size)
+        this.doInitialFetch(this.props.host)
+        this.getColorOptions(this.props.host)
     }
 
     doInitialFetch(host) {
@@ -25,6 +25,16 @@ class Game extends Component {
                     pixels: response.data.pixel_values, 
                     image_size: response.data.image_size
                 })
+            })
+    }
+
+    getColorOptions(host) {
+        let url = host + 'options'
+        axios
+            .get(url)
+            .then(response => {
+                console.log("OPTIONS ARE ", response)
+                
             })
     }
 

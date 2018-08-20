@@ -2,6 +2,13 @@ from PIL import Image, ImageDraw
 from sklearn.cluster import KMeans
 from collections import Counter
 import numpy as np
+from flask import Flask
+
+app = Flask(__name__)
+
+@app.route('/')
+def hello_world():
+    return 'Hello, World!'
 
 def load_image(path):
     im = Image.open(path) 

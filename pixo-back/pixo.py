@@ -24,7 +24,7 @@ def load_image(path = './mms.jpg'):
         for value in color:
             pixel_list.append(int(value))
         pixel_list.append(255)
-    # print("PIX_VAL ", pix_val)
+    # print("PIX LIST ", pixel_list)
     pix_values = pix_val
     # return im.size, pix_val
     return jsonify(image_size=im.size, pixel_values=pixel_list)
@@ -35,12 +35,12 @@ def cluster_colors():
     global pix_labels
     # incoming = request.get_json()
     # num_clusters = incoming["num_options"]
-    kmeans = KMeans(n_clusters = 4)
+    kmeans = KMeans(n_clusters = 8)
     pix_labels = kmeans.fit_predict(pix_values)
-    pix_val_dict = {}
-    for idx, center in enumerate(kmeans.cluster_centers_):
-        pix_val_dict[idx] = (int(center[0]), int(center[1]), int(center[2]))
-    return jsonify(color_options=pix_val_dict)
+    # pix_val_dict = {}
+    # for idx, center in enumerate(kmeans.cluster_centers_):
+    #     pix_val_dict[idx] = (int(center[0]), int(center[1]), int(center[2]))
+    return jsonify(color_options=kmeans.cluster_centers_.astype(int).tolist())
 
 def cluster(pixels, num_clusters):
     kmeans = KMeans(n_clusters = num_clusters)

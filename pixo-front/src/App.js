@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Game from './Game'
+import './Button.css'
 
 class App extends Component {
 

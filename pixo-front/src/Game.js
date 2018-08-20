@@ -1,11 +1,16 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import Image from './Image'
+import Button from './Button'
 
 class Game extends Component {
     constructor(props) {
         super(props)
-        this.state={}
+        this.state={
+            color_options : [],
+            pixels : [],
+            image_size : []
+        }
         this.doInitialFetch = this.doInitialFetch.bind(this);
         this.getColorOptions = this.getColorOptions.bind(this);
     }
@@ -21,10 +26,10 @@ class Game extends Component {
             .get(url)
             .then(response => {
                 console.log("RESPONSE IS ", response)
-                this.setState({
+                this.setState((prevState, props) => ({
                     pixels: response.data.pixel_values, 
                     image_size: response.data.image_size
-                })
+                }))
             })
     }
 
@@ -34,7 +39,9 @@ class Game extends Component {
             .get(url)
             .then(response => {
                 console.log("OPTIONS ARE ", response)
-                
+                this.setState((prevState, props) => ({
+                    color_options: response.data.color_options
+                }))                
             })
     }
 
@@ -61,11 +68,31 @@ class Game extends Component {
         
 
     // }
+                    // <Button color_options={this.state.color_options} />
+
+                                        // console.log("STATE IS ", this.state.color_options)
+                    // {color_options = this.state.color_options
+                    // console.log('COL OPTIONS ARE ', color_options)
+                    // this.state.color_options.map((color) => {
+                    //     <Button color_option={color} />
+                    // })
 
     render() {
         return (
             <div className="Game">
-                <Image pixels={this.state.pixels} image_size={this.state.image_size}/>
+
+                <Image pixels={this.state.pixels} image_size={this.state.image_size} />
+                
+
+                {
+                this.state.color_options.map((color, i) => {
+                    return <Button key={i} index={i} color_option={color} />
+                })
+                }   
+
+                         
+                    
+
             </div>
         );
     }

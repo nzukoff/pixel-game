@@ -4,18 +4,24 @@ from collections import Counter
 import numpy as np
 from flask import Flask
 from flask_cors import CORS
+from flask import jsonify
 
 app = Flask(__name__)
 CORS(app)
 
-@app.route('/')
-def hello_world():
-    return 'Hello, World!'
-
-def load_image(path):
+@app.route('/load')
+def load_image(path = './mms.jpg'):
     im = Image.open(path) 
     pix_val = np.array(list(im.getdata()))
-    return im.size, pix_val
+
+    pixel_list = []
+    for color in pix_val:
+        for value in color:
+            pixel_list.append(int(value))
+        pixel_list.append(255)
+    return jsonify(image_size=im.size, pixel_values=pixel_list)
+
+    # return im.size, pix_val
 
 def cluster(pixels, num_clusters):
     kmeans = KMeans(n_clusters = num_clusters)
@@ -83,31 +89,6 @@ def play_game(tupled_data, chosen_number, image_size, guesses_remaining, pixel_l
     elif chosen_number not in guesses_remaining:
         print("REMAINING GUESSES ARE ", guesses_remaining)
 
-## CREATES DATA FOR SPECIFIC LABELS
-# data = []
-# for idx, label in enumerate(y_kmeans):
-#     if label == 3 or label == 1 or label == 5:
-#         data.append(tuple(pix_val[idx]))
-#     else:
-#         data.append((255,255,255))
-
-## MOST COMMON COLORS
-# color_count = Counter()
-# for pix in pix_val:
-#     red = pix[0] >> 5
-#     green = pix[1] >> 5
-#     blue = pix[2] >> 5
-#     if (red, green, blue) in color_count:
-#         color_count[(red, green, blue)] += 1
-#     else:
-#         color_count[(red, green, blue)] = 1
-# most_common_colors = []
-# for cc in color_count.most_common(12):
-#     most_common_colors.append((cc[0][0] << 5, cc[0][1] << 5, cc[0][2] << 5))
-# print(most_common_colors)
-# for color in most_common_colors:    
-#     img = Image.new('RGB', (300, 200), color)
-#     img.show()
 
 if __name__ == '__main__':
     path = './mms.jpg'

@@ -3,7 +3,7 @@ from sklearn.cluster import KMeans
 from collections import Counter
 import numpy as np
 from flask import Flask
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 from flask import jsonify
 from flask import request
 
@@ -12,22 +12,22 @@ CORS(app)
 
 pix_values=None
 pix_labels=None
+pix_list=None
+updated_data=[]
 
 @app.route('/load')
 def load_image(path = './mms.jpg'):
     im = Image.open(path) 
     pix_val = np.array(list(im.getdata()))
     global pix_values
-
-    pixel_list = []
+    global pix_list
+    pix_list=[]
     for color in pix_val:
         for value in color:
-            pixel_list.append(int(value))
-        pixel_list.append(255)
-    # print("PIX LIST ", pixel_list)
+            pix_list.append(int(value))
+        pix_list.append(255)
     pix_values = pix_val
-    # return im.size, pix_val
-    return jsonify(image_size=im.size, pixel_values=pixel_list)
+    return jsonify(image_size=im.size, pixel_values=pix_list)
 
 @app.route('/options')
 def cluster_colors():
@@ -37,10 +37,30 @@ def cluster_colors():
     # num_clusters = incoming["num_options"]
     kmeans = KMeans(n_clusters = 8)
     pix_labels = kmeans.fit_predict(pix_values)
-    # pix_val_dict = {}
-    # for idx, center in enumerate(kmeans.cluster_centers_):
-    #     pix_val_dict[idx] = (int(center[0]), int(center[1]), int(center[2]))
     return jsonify(color_options=kmeans.cluster_centers_.astype(int).tolist())
+
+@app.route('/choose/<choice>')
+# @cross_origin(allow_headers=['Content-Type'])
+def choose_color(choice):
+    global pix_labels
+    global pix_list
+    global updated_data
+    pix_labels_spread = np.repeat(np.array(pix_labels), 4)
+    chosen_indices = np.where(pix_labels_spread == int(choice))
+    np_pix_list = np.array(pix_list)
+    if len(updated_data) == 0:
+        data = np.array([255 for d in range(len(pix_list))])
+        data[chosen_indices] = np_pix_list[chosen_indices]
+        updated_data = data
+    else:
+        updated_data[chosen_indices] = np_pix_list[chosen_indices]
+
+    return jsonify(pixel_values=updated_data.tolist())
+
+# def load_image(path = './mms.jpg'):
+#     im = Image.open(path) 
+#     pix_val = np.array(list(im.getdata()))
+#     return im.size, pix_val
 
 def cluster(pixels, num_clusters):
     kmeans = KMeans(n_clusters = num_clusters)

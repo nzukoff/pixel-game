@@ -16,7 +16,6 @@ class Image extends Component {
         
         const imgData=ctx.createImageData(image_size ? image_size[0] : 1, image_size ? image_size[1] : 1);
         var data = imgData.data;
-        console.log("PIX ARE ", pixels)
         if (pixels.length != 0) {
             for (let i=0;i<imgData.data.length;i++)
             {

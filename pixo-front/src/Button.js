@@ -18,7 +18,7 @@ class Button extends Component {
     render() {
         return (
             <div className="Button">
-                <button style={this.state.styles} className={`button${this.props.index}`} onClick={() => console.log("Hello")}></button>
+                <button style={this.state.styles} className={`button${this.props.index}`} onClick={() => this.props.chooseColor(this.props.index)}></button>
             </div>
         );
     }

@@ -13,6 +13,7 @@ class Game extends Component {
         }
         this.doInitialFetch = this.doInitialFetch.bind(this);
         this.getColorOptions = this.getColorOptions.bind(this);
+        this.chooseColor = this.chooseColor.bind(this);
     }
 
     componentDidMount(){
@@ -25,10 +26,21 @@ class Game extends Component {
         axios
             .get(url)
             .then(response => {
-                console.log("RESPONSE IS ", response)
                 this.setState((prevState, props) => ({
                     pixels: response.data.pixel_values, 
                     image_size: response.data.image_size
+                }))
+            })
+    }
+
+    chooseColor(choice) {
+        let button_id = 1
+        let url = `${this.props.host}choose/${choice}`
+        axios
+            .get(url)
+            .then(response => {
+                this.setState((prevState, props) => ({
+                    pixels: response.data.pixel_values, 
                 }))
             })
     }
@@ -38,7 +50,6 @@ class Game extends Component {
         axios
             .get(url)
             .then(response => {
-                console.log("OPTIONS ARE ", response)
                 this.setState((prevState, props) => ({
                     color_options: response.data.color_options
                 }))                
@@ -80,19 +91,12 @@ class Game extends Component {
     render() {
         return (
             <div className="Game">
-
                 <Image pixels={this.state.pixels} image_size={this.state.image_size} />
-                
-
                 {
-                this.state.color_options.map((color, i) => {
-                    return <Button key={i} index={i} color_option={color} />
-                })
-                }   
-
-                         
-                    
-
+                    this.state.color_options.map((color, i) => {
+                        return <Button key={i} index={i} color_option={color} chooseColor={this.chooseColor} />
+                    })
+                }
             </div>
         );
     }

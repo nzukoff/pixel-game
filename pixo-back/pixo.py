@@ -16,7 +16,7 @@ pix_list=None
 updated_data=[]
 
 @app.route('/load')
-def load_image(path = './mms.jpg'):
+def load_image(path = './mms2.jpg'):
     im = Image.open(path) 
     pix_val = np.array(list(im.getdata()))
     global pix_values
@@ -35,7 +35,7 @@ def cluster_colors():
     global pix_labels
     # incoming = request.get_json()
     # num_clusters = incoming["num_options"]
-    kmeans = KMeans(n_clusters = 8)
+    kmeans = KMeans(n_clusters = 4)
     pix_labels = kmeans.fit_predict(pix_values)
     return jsonify(color_options=kmeans.cluster_centers_.astype(int).tolist())
 
@@ -57,10 +57,10 @@ def choose_color(choice):
 
     return jsonify(pixel_values=updated_data.tolist())
 
-# def load_image(path = './mms.jpg'):
-#     im = Image.open(path) 
-#     pix_val = np.array(list(im.getdata()))
-#     return im.size, pix_val
+def load_image_server(path = './mms2.jpg'):
+    im = Image.open(path) 
+    pix_val = np.array(list(im.getdata()))
+    return im.size, pix_val
 
 def cluster(pixels, num_clusters):
     kmeans = KMeans(n_clusters = num_clusters)
@@ -131,8 +131,8 @@ def play_game(tupled_data, chosen_number, image_size, guesses_remaining, pixel_l
 
 
 if __name__ == '__main__':
-    path = './mms.jpg'
-    image_size, pixel_values = load_image(path)
+    path = './mms2.jpg'
+    image_size, pixel_values = load_image_server(path)
     num_clusters = 8
     pixel_labels, cluster_centers = cluster(pixel_values, num_clusters)
     find_and_draw_color_categories(cluster_centers, pixel_labels, pixel_values)

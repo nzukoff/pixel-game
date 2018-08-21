@@ -10,7 +10,7 @@ class Button extends Component {
         this.setState((prevState, props) => ({
             styles : {
                 backgroundColor: `rgb(${this.props.color_option})`, 
-                padding: '15px 32px'
+                padding: '16px 16px'
             }
         }))    
     }
@@ -18,7 +18,9 @@ class Button extends Component {
     render() {
         return (
             <div className="Button">
-                <button style={this.state.styles} className={`button${this.props.index}`} onClick={() => this.props.chooseColor(this.props.index)}></button>
+                {
+                    this.props.chosen ? <div></div> : <button style={this.state.styles} className={`button${this.props.index}`} onClick={() => this.props.chooseColor(this.props.index)}></button>
+                }
             </div>
         );
     }

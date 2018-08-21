@@ -40,6 +40,7 @@ class Game extends Component {
             .get(url)
             .then(response => {
                 this.setState((prevState, props) => ({
+                    ...prevState.color_options[choice].chosen = true,
                     pixels: response.data.pixel_values, 
                 }))
             })
@@ -49,9 +50,17 @@ class Game extends Component {
         let url = host + 'options'
         axios
             .get(url)
+            // .then(response => {
+            //     this.setState((prevState, props) => ({
+            //         color_options: response.data.color_options
+            //     }))                
+            // })
             .then(response => {
+                let expanded_color_options = response.data.color_options.map((color,i) => {
+                    return {color, chosen: false}
+                })
                 this.setState((prevState, props) => ({
-                    color_options: response.data.color_options
+                    color_options: expanded_color_options
                 }))                
             })
     }
@@ -93,9 +102,10 @@ class Game extends Component {
             <div className="Game">
                 <Image pixels={this.state.pixels} image_size={this.state.image_size} />
                 {
-                    this.state.color_options.map((color, i) => {
-                        return <Button key={i} index={i} color_option={color} chooseColor={this.chooseColor} />
+                    this.state.color_options.map((color_info, i) => {
+                        return <Button key={i} index={i} chosen={color_info.chosen} color_option={color_info.color} chooseColor={this.chooseColor} />
                     })
+
                 }
             </div>
         );

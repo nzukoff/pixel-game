@@ -27,8 +27,8 @@ class Game extends Component {
                     pixels: response.data.pixel_values, 
                     image_size: response.data.image_size
                 }))
+                this.getColorOptions(this.props.host)
             })
-        this.getColorOptions(this.props.host)
     }
 
     getColorOptions = (host) => {
@@ -66,8 +66,8 @@ class Game extends Component {
                     pixels: response.data.pixel_values, 
                     color_options
                 }))
+                this.setButtonStyles()
             })
-        this.setButtonStyles()
     }
 
 

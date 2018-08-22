@@ -17,7 +17,8 @@ color_options=[]
 updated_data=[]
 
 @app.route('/load')
-def load_image(path = './mms2.jpg'):
+def load_image(path = './koi.png'):
+    reset_values()
     im = Image.open(path) 
     pix_val = np.array(list(im.getdata()))
     global pix_values
@@ -35,8 +36,6 @@ def cluster_colors():
     global pix_values
     global pix_labels
     global color_options
-    # incoming = request.get_json()
-    # num_clusters = incoming["num_options"]
     kmeans = KMeans(n_clusters = 4)
     pix_labels = kmeans.fit_predict(pix_values)
     color_options = kmeans.cluster_centers_.astype(int).tolist()
@@ -62,6 +61,19 @@ def choose_color(choice):
         updated_data[chosen_indices] = np_pix_list[chosen_indices]
 
     return jsonify(pixel_values=updated_data.tolist(), color_options=color_options)
+
+def reset_values():
+    global pix_labels
+    global pix_list
+    global updated_data
+    global color_options
+    global updated_data
+    pix_labels=[]
+    pix_list=[]
+    updated_data=[]
+    color_options=[]
+    updated_data=[]
+
 
 def load_image_server(path = './mms2.jpg'):
     im = Image.open(path) 

@@ -13,6 +13,7 @@ CORS(app)
 pix_values=None
 pix_labels=None
 pix_list=None
+color_options=[]
 updated_data=[]
 
 @app.route('/load')
@@ -33,11 +34,13 @@ def load_image(path = './mms2.jpg'):
 def cluster_colors():
     global pix_values
     global pix_labels
+    global color_options
     # incoming = request.get_json()
     # num_clusters = incoming["num_options"]
     kmeans = KMeans(n_clusters = 4)
     pix_labels = kmeans.fit_predict(pix_values)
-    return jsonify(color_options=kmeans.cluster_centers_.astype(int).tolist())
+    color_options = kmeans.cluster_centers_.astype(int).tolist()
+    return jsonify(color_options=color_options)
 
 @app.route('/choose/<choice>')
 # @cross_origin(allow_headers=['Content-Type'])
@@ -45,6 +48,9 @@ def choose_color(choice):
     global pix_labels
     global pix_list
     global updated_data
+    global color_options
+    # color_options = [color for (i, color) in enumerate(color_options) if i != int(choice)]
+    color_options = [[] if i == int(choice) else color for i, color in enumerate(color_options)]
     pix_labels_spread = np.repeat(np.array(pix_labels), 4)
     chosen_indices = np.where(pix_labels_spread == int(choice))
     np_pix_list = np.array(pix_list)
@@ -55,7 +61,7 @@ def choose_color(choice):
     else:
         updated_data[chosen_indices] = np_pix_list[chosen_indices]
 
-    return jsonify(pixel_values=updated_data.tolist())
+    return jsonify(pixel_values=updated_data.tolist(), color_options=color_options)
 
 def load_image_server(path = './mms2.jpg'):
     im = Image.open(path) 

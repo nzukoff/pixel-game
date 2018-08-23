@@ -11,7 +11,8 @@ class Game extends Component {
             color_options : [],
             pixels : [],
             image_size : [], 
-            button_styles : []
+            button_styles : [],
+            score : 0
         }
     }
 
@@ -68,13 +69,22 @@ class Game extends Component {
                     chosen_place: response.data.chosen_place
                 }))
                 this.setButtonStyles()
+                this.updateScore()
             })
+    }
+
+    updateScore = () => {
+        if (this.state.chosen_place == 1) {
+            this.setState((prevState) => ({
+                score: prevState.score + 10
+            }))
+        }
     }
 
     render() {
         return (
             <div className="Game">
-                <Image pixels={this.state.pixels} image_size={this.state.image_size} />
+                <Image pixels={this.state.pixels} imageSize={this.state.image_size} />
                 {
                     this.state.button_styles.map((button_style, i) => {
                         if (this.state.color_options[i].length != 0) {
@@ -84,7 +94,7 @@ class Game extends Component {
                         }
                     })
                 }
-                <Display chosenPlace={this.state.chosen_place} />
+                <Display chosenPlace={this.state.chosen_place} score={this.state.score} />
             </div>
         );
     }

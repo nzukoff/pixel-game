@@ -23,6 +23,7 @@ class Button extends Component {
         let end = this.findEnding()
         return (
             <div className="Display">
+                <h2>{`Score: ${this.props.score}`}</h2>
                 {
                     this.props.chosenPlace ? <h3>{`Your guess was ${this.props.chosenPlace}${end} place`}</h3> : <div></div>
                 }

@@ -7,14 +7,14 @@ class Image extends Component {
     }
     
     componentDidUpdate() {
-        this.createImage(this.props.pixels, this.props.image_size)
+        this.createImage(this.props.pixels, this.props.imageSize)
     }
 
-    createImage(pixels, image_size) {
+    createImage(pixels, imageSize) {
         const canvas = this.refs.canvas
         const ctx = canvas.getContext("2d")
         
-        const imgData=ctx.createImageData(image_size ? image_size[0] : 1, image_size ? image_size[1] : 1);
+        const imgData=ctx.createImageData(imageSize ? imageSize[0] : 1, imageSize ? imageSize[1] : 1);
         var data = imgData.data;
         if (pixels.length != 0) {
             for (let i=0;i<imgData.data.length;i++)
@@ -28,7 +28,7 @@ class Image extends Component {
     render() {
         return (
             <div className="Image">
-                <canvas ref="canvas" width={this.props.image_size ? this.props.image_size[0] : 1} height={this.props.image_size ? this.props.image_size[1] : 1}/>
+                <canvas ref="canvas" width={this.props.imageSize ? this.props.imageSize[0] : 1} height={this.props.imageSize ? this.props.imageSize[1] : 1}/>
             </div>
         );
     }

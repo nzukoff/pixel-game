@@ -15,9 +15,10 @@ pix_labels=None
 pix_list=None
 color_options=[]
 updated_data=[]
+updated_labels = []
 
 @app.route('/load')
-def load_image(path = './koi.png'):
+def load_image(path = './mms2.jpg'):
     reset_values()
     im = Image.open(path) 
     pix_val = np.array(list(im.getdata()))
@@ -36,7 +37,7 @@ def cluster_colors():
     global pix_values
     global pix_labels
     global color_options
-    kmeans = KMeans(n_clusters = 4)
+    kmeans = KMeans(n_clusters = 8)
     pix_labels = kmeans.fit_predict(pix_values)
     color_options = kmeans.cluster_centers_.astype(int).tolist()
     return jsonify(color_options=color_options)
@@ -48,19 +49,45 @@ def choose_color(choice):
     global pix_list
     global updated_data
     global color_options
-    # color_options = [color for (i, color) in enumerate(color_options) if i != int(choice)]
-    color_options = [[] if i == int(choice) else color for i, color in enumerate(color_options)]
+    global updated_labels
+
+    choice = int(choice)
+
     pix_labels_spread = np.repeat(np.array(pix_labels), 4)
-    chosen_indices = np.where(pix_labels_spread == int(choice))
+    chosen_indices = np.where(pix_labels_spread == choice)
     np_pix_list = np.array(pix_list)
+
     if len(updated_data) == 0:
         data = np.array([255 for d in range(len(pix_list))])
         data[chosen_indices] = np_pix_list[chosen_indices]
         updated_data = data
+        labels_count = update_labels(pix_labels, choice)
     else:
         updated_data[chosen_indices] = np_pix_list[chosen_indices]
+        labels_count = update_labels(updated_labels, choice)
 
-    return jsonify(pixel_values=updated_data.tolist(), color_options=color_options)
+    # color_options = [color for (i, color) in enumerate(color_options) if i != int(choice)]
+    color_options = [[] if i == choice else color for i, color in enumerate(color_options)]
+
+    print("LABELS COUNT ", labels_count)
+
+    chosen_place = None
+    for idx, (key, count) in enumerate(labels_count):
+        if key == choice:
+            print("PLACE OF CHOICE IS ", idx+1)
+            chosen_place = idx
+
+    del labels_count[chosen_place]
+    print("CHOICE IS ", choice)
+    print("LABELS COUNT ", labels_count)
+
+    return jsonify(pixel_values=updated_data.tolist(), color_options=color_options, chosen_place=chosen_place+1)
+
+def update_labels(label_list, choice):
+    global updated_labels
+    labels_count = Counter(label_list).most_common()
+    updated_labels = [label for label in label_list if label != choice]
+    return labels_count
 
 def reset_values():
     global pix_labels

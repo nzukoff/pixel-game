@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import Image from './Image'
 import Button from './Button'
+import Display from './Display'
 
 class Game extends Component {
     constructor(props) {
@@ -61,15 +62,14 @@ class Game extends Component {
         axios
             .get(url)
             .then(response => {
-                let color_options = response.data.color_options
                 this.setState((prevState, props) => ({
                     pixels: response.data.pixel_values, 
-                    color_options
+                    color_options: response.data.color_options,
+                    chosen_place: response.data.chosen_place
                 }))
                 this.setButtonStyles()
             })
     }
-
 
     render() {
         return (
@@ -78,12 +78,13 @@ class Game extends Component {
                 {
                     this.state.button_styles.map((button_style, i) => {
                         if (this.state.color_options[i].length != 0) {
-                            return <Button key={i} place={i} button_style={button_style} chooseColor={this.chooseColor} />
+                            return <Button key={i} place={i} buttonStyle={button_style} chooseColor={this.chooseColor} />
                         } else {
                             return <div key={i}></div>
                         }
                     })
                 }
+                <Display chosenPlace={this.state.chosen_place} />
             </div>
         );
     }

@@ -7,7 +7,10 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <Game host='http://127.0.0.1:5000/'/>
+        <div className="container">
+          <Game host='http://127.0.0.1:5000/'/>
+        </div>
+        
       </div>
     );
   }

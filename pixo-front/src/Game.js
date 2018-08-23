@@ -47,10 +47,18 @@ class Game extends Component {
     }
 
     setButtonStyles = () => {
+        console.log("IMAGE SIZE", this.state.image_size)
+        let button_dim = (this.state.image_size[0]/4)/2-1
+        console.log("BUTTON DIMENSION ", button_dim)
         let button_styles = this.state.color_options.map((color) => {
             return {
                 backgroundColor: `rgb(${color})`, 
-                padding: '16px 16px', 
+                padding: `${button_dim}px ${button_dim}px`,
+                borderRadius: '8px',
+                border: 'none',
+                margin: '1px',
+                display: 'inline',
+                float:'left'
             }
         })
         this.setState((prevState, props) => ({
@@ -84,17 +92,28 @@ class Game extends Component {
     render() {
         return (
             <div className="Game">
-                <Image pixels={this.state.pixels} imageSize={this.state.image_size} />
-                {
-                    this.state.button_styles.map((button_style, i) => {
-                        if (this.state.color_options[i].length != 0) {
-                            return <Button key={i} place={i} buttonStyle={button_style} chooseColor={this.chooseColor} />
-                        } else {
-                            return <div key={i}></div>
-                        }
-                    })
-                }
-                <Display chosenPlace={this.state.chosen_place} score={this.state.score} />
+                <div className="container">
+                    <div className="row">
+                        <div className="col">
+                        </div>
+                        <div className="col">
+                            <Image pixels={this.state.pixels} imageSize={this.state.image_size} />
+                            {
+                                this.state.button_styles.map((button_style, i) => {
+                                    if (this.state.color_options[i].length != 0) {
+                                        return <Button key={i} place={i} buttonStyle={button_style} chooseColor={this.chooseColor} />
+                                    } else {
+                                        return <div key={i}></div>
+                                    }
+                                })
+                            }
+                        </div>
+                        <div className="col">
+                            <Display chosenPlace={this.state.chosen_place} score={this.state.score} />
+                        </div>
+                    </div>
+                    
+                </div>
             </div>
         );
     }

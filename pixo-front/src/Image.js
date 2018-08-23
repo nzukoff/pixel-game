@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-
+import './Image.css' 
 class Image extends Component {
     constructor(props) {
         super(props)
@@ -28,7 +28,7 @@ class Image extends Component {
     render() {
         return (
             <div className="Image">
-                <canvas ref="canvas" width={this.props.imageSize ? this.props.imageSize[0] : 1} height={this.props.imageSize ? this.props.imageSize[1] : 1}/>
+                <canvas className="image" ref="canvas" width={this.props.imageSize ? this.props.imageSize[0] : 1} height={this.props.imageSize ? this.props.imageSize[1] : 1}/>
             </div>
         );
     }

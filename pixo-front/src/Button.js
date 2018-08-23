@@ -8,9 +8,7 @@ class Button extends Component {
     render() {
         return (
             <div className="Button">
-                {
-                    <button style={this.props.buttonStyle} onClick={() => this.props.chooseColor(this.props.place)}></button>
-                }
+                <button style={this.props.buttonStyle} onClick={() => this.props.chooseColor(this.props.place)}></button>
             </div>
         );
     }

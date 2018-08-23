@@ -18,7 +18,7 @@ updated_data=[]
 updated_labels = []
 
 @app.route('/load')
-def load_image(path = './mms2.jpg'):
+def load_image(path = './skydive_small.jpg'):
     reset_values()
     im = Image.open(path) 
     pix_val = np.array(list(im.getdata()))
@@ -37,7 +37,7 @@ def cluster_colors():
     global pix_values
     global pix_labels
     global color_options
-    kmeans = KMeans(n_clusters = 8)
+    kmeans = KMeans(n_clusters = 16)
     pix_labels = kmeans.fit_predict(pix_values)
     color_options = kmeans.cluster_centers_.astype(int).tolist()
     return jsonify(color_options=color_options)

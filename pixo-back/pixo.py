@@ -17,9 +17,21 @@ color_options=[]
 updated_data=[]
 updated_labels = []
 
+images = ['flower_small.jpg','mms_small.jpg','rainbow_mountains_small.jpg','skittles_small.jpg','skydive_small.jpg', 'tucan_small.jpg', 'poppy_small.jpg','worms_small.jpg']
+images_counter = 0
+
 @app.route('/load')
-def load_image(path = './skydive_small.jpg'):
+def load_image(path = './flower_small.jpg'):
     reset_values()
+
+    global images
+    global images_counter
+    path = images[images_counter]
+    if images_counter == len(images) - 1:
+        images_counter = 0
+    else:
+        images_counter += 1
+    
     im = Image.open(path) 
     pix_val = np.array(list(im.getdata()))
     global pix_values
@@ -37,7 +49,7 @@ def cluster_colors():
     global pix_values
     global pix_labels
     global color_options
-    kmeans = KMeans(n_clusters = 16)
+    kmeans = KMeans(n_clusters = 10, algorithm='elkan')
     pix_labels = kmeans.fit_predict(pix_values)
     color_options = kmeans.cluster_centers_.astype(int).tolist()
     return jsonify(color_options=color_options)

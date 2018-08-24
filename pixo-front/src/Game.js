@@ -12,7 +12,8 @@ class Game extends Component {
             pixels : [],
             image_size : [], 
             button_styles : [],
-            score : 0
+            score : 0, 
+            chosen_place : 0
         }
     }
 
@@ -20,14 +21,17 @@ class Game extends Component {
         this.doInitialFetch(this.props.host)
     }
 
-    doInitialFetch = (host) => {
+    doInitialFetch = (host = this.props.host) => {
         let url = host + 'load'
         axios
             .get(url)
             .then(response => {
                 this.setState((prevState, props) => ({
                     pixels: response.data.pixel_values, 
-                    image_size: response.data.image_size
+                    image_size: response.data.image_size, 
+                    button_styles : [],
+                    score: 0, 
+                    chosen_place: 0
                 }))
                 this.getColorOptions(this.props.host)
             })
@@ -48,7 +52,7 @@ class Game extends Component {
 
     setButtonStyles = () => {
         console.log("IMAGE SIZE", this.state.image_size)
-        let button_dim = (this.state.image_size[0]/4)/2-1
+        let button_dim = (this.state.image_size[0]/5)/2-1
         console.log("BUTTON DIMENSION ", button_dim)
         let button_styles = this.state.color_options.map((color) => {
             return {
@@ -74,7 +78,7 @@ class Game extends Component {
                 this.setState((prevState, props) => ({
                     pixels: response.data.pixel_values, 
                     color_options: response.data.color_options,
-                    chosen_place: response.data.chosen_place
+                    chosen_place: response.data.chosen_place, 
                 }))
                 this.setButtonStyles()
                 this.updateScore()
@@ -109,7 +113,7 @@ class Game extends Component {
                             }
                         </div>
                         <div className="col">
-                            <Display chosenPlace={this.state.chosen_place} score={this.state.score} />
+                            <Display reset={this.doInitialFetch} chosenPlace={this.state.chosen_place} score={this.state.score} />
                         </div>
                     </div>
                     

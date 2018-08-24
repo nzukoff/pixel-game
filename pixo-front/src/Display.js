@@ -25,9 +25,10 @@ class Button extends Component {
         return (
             <div className="Display">
                 <div className="score_board">
-                    <h3>{`Score: ${this.props.score}`}</h3>
+                    <button type="button" className="btn btn-secondary btn-lg" onClick={() => {this.props.reset()}}>New Game</button>
+                    <h1 className="score display-4">{`Score: ${this.props.score}`}</h1>
                     {
-                        this.props.chosenPlace ? <h3>{`Your guess was ${this.props.chosenPlace}${end} place`}</h3> : <div></div>
+                        this.props.chosenPlace ? <h3 className="score">{`Your guess was ${this.props.chosenPlace}${end} place`}</h3> : <div></div>
                     }
                 </div>
             </div>

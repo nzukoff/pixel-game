@@ -13,6 +13,7 @@ class Game extends Component {
             image_size : [], 
             button_styles : [],
             score : 0, 
+            percentage : 0,
             chosen_place : 0
         }
     }
@@ -31,6 +32,7 @@ class Game extends Component {
                     image_size: response.data.image_size, 
                     button_styles : [],
                     score: 0, 
+                    percentage: 0,
                     chosen_place: 0
                 }))
                 this.getColorOptions(this.props.host)
@@ -87,8 +89,10 @@ class Game extends Component {
 
     updateScore = () => {
         if (this.state.chosen_place == 1) {
+            const percentage  = (100/this.state.color_options.length)
             this.setState((prevState) => ({
-                score: prevState.score + 10
+                score: prevState.score + 10,
+                percentage: prevState.percentage + percentage
             }))
         }
     }
@@ -111,7 +115,7 @@ class Game extends Component {
                             }
                         </div>
                         <div className="col">
-                            <Display reset={() => {this.doInitialFetch('next')}} chosenPlace={this.state.chosen_place} score={this.state.score} />
+                            <Display reset={() => {this.doInitialFetch('next')}} chosenPlace={this.state.chosen_place} percentage={this.state.percentage} score={this.state.score} />
                         </div>
                     </div>
                     

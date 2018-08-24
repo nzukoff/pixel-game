@@ -31,7 +31,7 @@ class Button extends Component {
                     {
                         this.props.chosenPlace ? <h3 className="score">{`Your guess was ${this.props.chosenPlace}${end} place`}</h3> : <div></div>
                     }
-                    <ScoreBar percentage={this.props.score} />
+                    <ScoreBar percentage={this.props.percentage} />
                 </div>
             </div>
         );

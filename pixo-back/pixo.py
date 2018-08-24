@@ -8,6 +8,7 @@ from flask import Flask
 from flask_cors import CORS, cross_origin
 from flask import jsonify
 from flask import request
+import glob
 
 app = Flask(__name__)
 CORS(app)
@@ -19,9 +20,10 @@ color_options=[]
 updated_data=[]
 updated_labels = []
 
-images = ['tile3_small.jpg','tulips_small.jpg','legos2_small.jpg','town_small.jpg','mural1_small.jpg','tile1_small.jpg','bathing_hut_small.jpg','legos1_small.jpg','succulents_small.jpg','tile2_small.jpg','mural2_small.jpg','flower_small.jpg','mms_small.jpg','rainbow_mountains_small.jpg','skittles_small.jpg','skydive_small.jpg', 'tucan_small.jpg', 'poppy_small.jpg','worms_small.jpg']
 # images = ['tile3_small.jpg','tulips_small.jpg','legos2_small.jpg']
+images = glob.glob('./small-images/*.jpg')
 images_copy = []
+
 
 @app.route('/load/<load_type>/')
 def load_image(load_type):
@@ -44,8 +46,6 @@ def load_image(load_type):
             images_copy.remove(path)
 
     # path = images[game_counter]
-
-
     
     im = Image.open(path) 
     pix_val = np.array(list(im.getdata()))
@@ -99,7 +99,6 @@ def choose_color(choice):
     chosen_place = None
     for idx, (key, count) in enumerate(labels_count):
         if key == choice:
-            print("PLACE OF CHOICE IS ", idx+1)
             chosen_place = idx
 
     del labels_count[chosen_place]

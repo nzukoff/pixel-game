@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ScoreBar from '../ScoreBar/ScoreBar'
 import './Display.css'
 
 class Button extends Component {
@@ -30,6 +31,7 @@ class Button extends Component {
                     {
                         this.props.chosenPlace ? <h3 className="score">{`Your guess was ${this.props.chosenPlace}${end} place`}</h3> : <div></div>
                     }
+                    <ScoreBar percentage={this.props.score} />
                 </div>
             </div>
         );

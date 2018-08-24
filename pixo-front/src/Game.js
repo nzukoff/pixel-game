@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import Image from './Image'
-import Button from './Button'
-import Display from './Display'
+import Image from './components/Image/Image'
+import Button from './components/Button/Button'
+import Display from './components/Display/Display'
 
 class Game extends Component {
     constructor(props) {
@@ -18,11 +18,11 @@ class Game extends Component {
     }
 
     componentDidMount() {
-        this.doInitialFetch(this.props.host)
+        this.doInitialFetch('new', this.props.host)
     }
 
-    doInitialFetch = (host = this.props.host) => {
-        let url = host + 'load'
+    doInitialFetch = (load_type, host = this.props.host) => {
+        let url = `${host}load/${load_type}`
         axios
             .get(url)
             .then(response => {
@@ -111,7 +111,7 @@ class Game extends Component {
                             }
                         </div>
                         <div className="col">
-                            <Display reset={this.doInitialFetch} chosenPlace={this.state.chosen_place} score={this.state.score} />
+                            <Display reset={() => {this.doInitialFetch('next')}} chosenPlace={this.state.chosen_place} score={this.state.score} />
                         </div>
                     </div>
                     

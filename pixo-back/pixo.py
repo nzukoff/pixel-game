@@ -2,6 +2,8 @@ from PIL import Image, ImageDraw
 from sklearn.cluster import KMeans, MiniBatchKMeans
 from collections import Counter
 import numpy as np
+import random
+from random import randint
 from flask import Flask
 from flask_cors import CORS, cross_origin
 from flask import jsonify
@@ -17,20 +19,33 @@ color_options=[]
 updated_data=[]
 updated_labels = []
 
-images = ['flower_small.jpg','mms_small.jpg','rainbow_mountains_small.jpg','skittles_small.jpg','skydive_small.jpg', 'tucan_small.jpg', 'poppy_small.jpg','worms_small.jpg']
-images_counter = 0
+images = ['tile3_small.jpg','tulips_small.jpg','legos2_small.jpg','town_small.jpg','mural1_small.jpg','tile1_small.jpg','bathing_hut_small.jpg','legos1_small.jpg','succulents_small.jpg','tile2_small.jpg','mural2_small.jpg','flower_small.jpg','mms_small.jpg','rainbow_mountains_small.jpg','skittles_small.jpg','skydive_small.jpg', 'tucan_small.jpg', 'poppy_small.jpg','worms_small.jpg']
+# images = ['tile3_small.jpg','tulips_small.jpg','legos2_small.jpg']
+images_copy = []
 
-@app.route('/load')
-def load_image(path = './flower_small.jpg'):
+@app.route('/load/<load_type>/')
+def load_image(load_type):
     reset_values()
 
     global images
-    global images_counter
-    path = images[images_counter]
-    if images_counter == len(images) - 1:
-        images_counter = 0
-    else:
-        images_counter += 1
+    global images_copy
+
+    if load_type == 'new':
+        images_copy = images.copy()
+        path = random.choice(images)
+        images_copy.remove(path)
+
+    elif load_type == 'next':
+        path = random.choice(images_copy)
+        images_copy.remove(path)
+
+        if len(images_copy) == 0:
+            images_copy = images.copy()
+            images_copy.remove(path)
+
+    # path = images[game_counter]
+
+
     
     im = Image.open(path) 
     pix_val = np.array(list(im.getdata()))
@@ -81,8 +96,6 @@ def choose_color(choice):
     # color_options = [color for (i, color) in enumerate(color_options) if i != int(choice)]
     color_options = [[] if i == choice else color for i, color in enumerate(color_options)]
 
-    print("LABELS COUNT ", labels_count)
-
     chosen_place = None
     for idx, (key, count) in enumerate(labels_count):
         if key == choice:
@@ -90,8 +103,6 @@ def choose_color(choice):
             chosen_place = idx
 
     del labels_count[chosen_place]
-    print("CHOICE IS ", choice)
-    print("LABELS COUNT ", labels_count)
 
     return jsonify(pixel_values=updated_data.tolist(), color_options=color_options, chosen_place=chosen_place+1)
 
@@ -112,7 +123,6 @@ def reset_values():
     updated_data=[]
     color_options=[]
     updated_data=[]
-
 
 def load_image_server(path = './mms2.jpg'):
     im = Image.open(path) 
@@ -154,10 +164,6 @@ def find_and_draw_color_categories(cluster_centers, pixel_labels, pixel_values):
         d = ImageDraw.Draw(img)
         d.text((10,10), str(label), fill=(0,0,0))
         img.show()
-    # print(test_color)
-    # print(color_dict[3])
-    # print(color_dict[3] == test_color)
-
     
 def initialize_data():
     data = np.array([(255,255,255) for d in range(len(pixel_values))])

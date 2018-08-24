@@ -15,7 +15,6 @@ class Game extends Component {
             score : 0, 
             percentage : 0,
             chosen_place : 0,
-            // button_text : []
         }
     }
 
@@ -54,7 +53,6 @@ class Game extends Component {
     }
 
     setButtonStyles = (choice) => {
-        // let text = this.state.button_text
         let button_dim = (this.state.image_size[0]/5)/2-2
         let button_styles = this.state.color_options.map((color, index) => {
             if (index == choice) {
@@ -63,8 +61,9 @@ class Game extends Component {
             return {
                 backgroundColor: `rgb(${color})`, 
                 padding: `${button_dim}px ${button_dim}px`,
+                border: '1px solid rgb(205,208,210)',
                 borderRadius: '8px',
-                marginBottom: '1px',
+                margin: '1px',
                 display: 'inline',
                 float:'left'
             }
@@ -110,9 +109,7 @@ class Game extends Component {
                             <Image pixels={this.state.pixels} imageSize={this.state.image_size} />
                             {
                                 this.state.button_styles.map((button_style, i) => {
-                                   {/* if (this.state.color_options[i].length != 0) {  */}
-                                        return <Button key={i} place={i} buttonStyle={button_style} chooseColor={this.chooseColor}/>
-                                   {/* }  */}
+                                    return <Button key={i} place={i} buttonStyle={button_style} chooseColor={this.chooseColor}/>
                                 })
                             }
                         </div>

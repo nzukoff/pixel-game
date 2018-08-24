@@ -5,20 +5,22 @@ class Button extends Component {
         super(props)
     }
 
-    componentDidUpdate() {
-        console.log("BUTTON STYLE IS ", this.props.buttonStyle.backgroundColor)
-    }
-
     render() {
+        let buttonStyle
+        let currentBackground = this.props.buttonStyle.backgroundColor
+        if (currentBackground == 'rgb(236,249,249)' || currentBackground == 'rgb()') {
+            buttonStyle = {
+                ...this.props.buttonStyle,
+                border: 'none',
+                margin: '2px',
+            }
+        }
+        else {
+            buttonStyle = this.props.buttonStyle
+        }
         return (
             <div className="Button">
-                {/* this.props.chosen ? <button style={this.props.buttonStyle} ></button> : <button style={this.props.buttonStyle} onClick={() => this.props.chooseColor(this.props.place)}></button> */}
-                <button style={this.props.buttonStyle} onClick={() => this.props.chooseColor(this.props.place)}></button>
-                {/* {
-                    this.props.buttonStyle.backgroundColor == 'rgb(236,249,249)' ?
-                    <div style={this.props.buttonStyle}>X</div> :
-                    <button class="empty" type="button" style={this.props.buttonStyle} onClick={() => this.props.chooseColor(this.props.place)}></button>
-                } */}
+                <div style={buttonStyle} onClick={() => this.props.chooseColor(this.props.place)}></div>
             </div>
         );
     }

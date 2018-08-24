@@ -24,7 +24,6 @@ updated_labels = []
 images = glob.glob('./small-images/*.jpg')
 images_copy = []
 
-
 @app.route('/load/<load_type>/')
 def load_image(load_type):
     reset_values()
@@ -64,7 +63,7 @@ def cluster_colors():
     global pix_values
     global pix_labels
     global color_options
-    kmeans = MiniBatchKMeans(n_clusters = 15)
+    kmeans = MiniBatchKMeans(n_clusters = 10)
     pix_labels = kmeans.fit_predict(pix_values)
     color_options = kmeans.cluster_centers_.astype(int).tolist()
     return jsonify(color_options=color_options)

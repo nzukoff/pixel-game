@@ -50,17 +50,17 @@ class Game extends Component {
             })
     }
 
-    setButtonStyles = () => {
-        console.log("IMAGE SIZE", this.state.image_size)
-        let button_dim = (this.state.image_size[0]/5)/2-1
-        console.log("BUTTON DIMENSION ", button_dim)
-        let button_styles = this.state.color_options.map((color) => {
+    setButtonStyles = (choice) => {
+        let button_dim = (this.state.image_size[0]/5)/2-2
+        let button_styles = this.state.color_options.map((color, index) => {
+            if (index == choice) {
+                color = [236, 249, 249]
+            }
             return {
                 backgroundColor: `rgb(${color})`, 
                 padding: `${button_dim}px ${button_dim}px`,
                 borderRadius: '8px',
-                border: 'none',
-                margin: '1px',
+                marginBottom: '1px',
                 display: 'inline',
                 float:'left'
             }
@@ -78,9 +78,9 @@ class Game extends Component {
                 this.setState((prevState, props) => ({
                     pixels: response.data.pixel_values, 
                     color_options: response.data.color_options,
-                    chosen_place: response.data.chosen_place, 
+                    chosen_place: response.data.chosen_place
                 }))
-                this.setButtonStyles()
+                this.setButtonStyles(choice)
                 this.updateScore()
             })
     }
@@ -100,15 +100,13 @@ class Game extends Component {
                     <div className="row">
                         <div className="col">
                         </div>
-                        <div className="col">
+                         <div className="col">
                             <Image pixels={this.state.pixels} imageSize={this.state.image_size} />
                             {
                                 this.state.button_styles.map((button_style, i) => {
-                                    if (this.state.color_options[i].length != 0) {
+                                   {/* if (this.state.color_options[i].length != 0) {  */}
                                         return <Button key={i} place={i} buttonStyle={button_style} chooseColor={this.chooseColor} />
-                                    } else {
-                                        return <div key={i}></div>
-                                    }
+                                   {/* }  */}
                                 })
                             }
                         </div>

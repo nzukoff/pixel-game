@@ -1,5 +1,5 @@
 from PIL import Image, ImageDraw
-from sklearn.cluster import KMeans
+from sklearn.cluster import KMeans, MiniBatchKMeans
 from collections import Counter
 import numpy as np
 from flask import Flask
@@ -49,7 +49,7 @@ def cluster_colors():
     global pix_values
     global pix_labels
     global color_options
-    kmeans = KMeans(n_clusters = 10, algorithm='elkan')
+    kmeans = MiniBatchKMeans(n_clusters = 15)
     pix_labels = kmeans.fit_predict(pix_values)
     color_options = kmeans.cluster_centers_.astype(int).tolist()
     return jsonify(color_options=color_options)

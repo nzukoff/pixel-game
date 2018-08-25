@@ -58,12 +58,12 @@ def load_image(load_type):
     pix_values = pix_val
     return jsonify(image_size=im.size, pixel_values=pix_list)
 
-@app.route('/options')
-def cluster_colors():
+@app.route('/options/<n_clusters>/')
+def cluster_colors(n_clusters):
     global pix_values
     global pix_labels
     global color_options
-    kmeans = MiniBatchKMeans(n_clusters = 10)
+    kmeans = MiniBatchKMeans(int(n_clusters))
     pix_labels = kmeans.fit_predict(pix_values)
     color_options = kmeans.cluster_centers_.astype(int).tolist()
     return jsonify(color_options=color_options)

@@ -19,10 +19,10 @@ class Game extends Component {
     }
 
     componentDidMount() {
-        this.doInitialFetch('new', this.props.host)
+        this.doInitialFetch('new', this.props.host, 15)
     }
 
-    doInitialFetch = (load_type, host = this.props.host) => {
+    doInitialFetch = (load_type, host, num_colors) => {
         let url = `${host}load/${load_type}`
         axios
             .get(url)
@@ -35,12 +35,12 @@ class Game extends Component {
                     percentage: 0,
                     chosen_place: 0
                 }))
-                this.getColorOptions(this.props.host)
+                this.getColorOptions(num_colors, this.props.host)
             })
     }
 
-    getColorOptions = (host) => {
-        let url = host + 'options'
+    getColorOptions = (num_colors, host = this.props.host) => {
+        let url = `${host}options/${num_colors}`
         axios
             .get(url)
             .then(response => {
@@ -62,7 +62,7 @@ class Game extends Component {
                 backgroundColor: `rgb(${color})`, 
                 padding: `${button_dim}px ${button_dim}px`,
                 border: '1px solid rgb(205,208,210)',
-                borderRadius: '8px',
+                borderRadius: '10px',
                 margin: '1px',
                 display: 'inline',
                 float:'left'
@@ -114,7 +114,7 @@ class Game extends Component {
                             }
                         </div>
                         <div className="col">
-                            <Display reset={() => {this.doInitialFetch('next')}} chosenPlace={this.state.chosen_place} percentage={this.state.percentage} score={this.state.score} />
+                            <Display reset={(num_colors) => {this.doInitialFetch('next', this.props.host, num_colors)}} chosenPlace={this.state.chosen_place} percentage={this.state.percentage} score={this.state.score} />
                         </div>
                     </div>
                     

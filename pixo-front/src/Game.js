@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux'
 import axios from 'axios';
 import Image from './components/Image/Image'
 import Button from './components/Button/Button'
@@ -7,15 +8,15 @@ import Display from './components/Display/Display'
 class Game extends Component {
     constructor(props) {
         super(props)
-        this.state={
-            color_options : [],
-            pixels : [],
-            image_size : [], 
-            button_styles : [],
-            score : 0, 
-            percentage : 0,
-            chosen_place : 0,
-        }
+        // this.state={
+        //     color_options : [],
+        //     pixels : [],
+        //     image_size : [], 
+        //     button_styles : [],
+        //     score : 0, 
+        //     percentage : 0,
+        //     chosen_place : 0,
+        // }
     }
 
     componentDidMount() {
@@ -53,8 +54,8 @@ class Game extends Component {
     }
 
     setButtonStyles = (choice) => {
-        let button_dim = (this.state.image_size[0]/5)/2-2
-        let button_styles = this.state.color_options.map((color, index) => {
+        let button_dim = (this.props.image_size[0]/5)/2-2
+        let button_styles = this.props.color_options.map((color, index) => {
             if (index == choice) {
                 color = [236, 249, 249]
             }
@@ -89,8 +90,8 @@ class Game extends Component {
     }
 
     updateScore = () => {
-        if (this.state.chosen_place == 1) {
-            const percentage  = (100/this.state.color_options.length)
+        if (this.props.chosen_place == 1) {
+            const percentage  = (100/this.props.color_options.length)
             this.setState((prevState) => ({
                 score: prevState.score + 10,
                 percentage: prevState.percentage + percentage
@@ -105,16 +106,16 @@ class Game extends Component {
                     <div className="row">
                         <div className="col">
                         </div>
-                         <div className="col">
-                            <Image pixels={this.state.pixels} imageSize={this.state.image_size} />
+                         <div className="col-auto">
+                            <Image pixels={this.props.pixels} imageSize={this.props.image_size} />
                             {
-                                this.state.button_styles.map((button_style, i) => {
+                                this.props.button_styles.map((button_style, i) => {
                                     return <Button key={i} place={i} buttonStyle={button_style} chooseColor={this.chooseColor}/>
                                 })
                             }
                         </div>
                         <div className="col">
-                            <Display reset={(num_colors) => {this.doInitialFetch('next', this.props.host, num_colors)}} chosenPlace={this.state.chosen_place} percentage={this.state.percentage} score={this.state.score} />
+                            <Display reset={(num_colors) => {this.doInitialFetch('next', this.props.host, num_colors)}} chosenPlace={this.props.chosen_place} percentage={this.props.percentage} score={this.props.score} />
                         </div>
                     </div>
                     
@@ -124,4 +125,18 @@ class Game extends Component {
     }
 }
 
-export default Game;
+const mapStateToProps = state => ({
+    color_options : state.color_options,
+    pixels : state.pixels,
+    image_size : state.image_size, 
+    button_styles : state.button_styles,
+    score : state.score, 
+    percentage : state.percentage,
+    chosen_place : state.chosen_place
+})
+
+// export default Game;
+
+export default connect(
+    mapStateToProps
+  )(Game)

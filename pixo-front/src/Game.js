@@ -5,39 +5,16 @@ import Image from './components/Image/Image'
 import Button from './components/Button/Button'
 import Display from './components/Display/Display'
 
+import { doInitialFetch } from './actions/index'
+
+
 class Game extends Component {
     constructor(props) {
         super(props)
-        // this.state={
-        //     color_options : [],
-        //     pixels : [],
-        //     image_size : [], 
-        //     button_styles : [],
-        //     score : 0, 
-        //     percentage : 0,
-        //     chosen_place : 0,
-        // }
     }
 
     componentDidMount() {
-        this.doInitialFetch('new', this.props.host, 15)
-    }
-
-    doInitialFetch = (load_type, host, num_colors) => {
-        let url = `${host}load/${load_type}`
-        axios
-            .get(url)
-            .then(response => {
-                this.setState((prevState, props) => ({
-                    pixels: response.data.pixel_values, 
-                    image_size: response.data.image_size, 
-                    button_styles : [],
-                    score: 0, 
-                    percentage: 0,
-                    chosen_place: 0
-                }))
-                this.getColorOptions(num_colors, this.props.host)
-            })
+        this.props.doInitialFetch('new', this.props.host, 15)
     }
 
     getColorOptions = (num_colors, host = this.props.host) => {
@@ -135,8 +112,11 @@ const mapStateToProps = state => ({
     chosen_place : state.chosen_place
 })
 
-// export default Game;
+const mapDispatchToProps = dispatch => ({
+    doInitialFetch: (load_type, host, num_colors) => dispatch(doInitialFetch(load_type, host, num_colors))
+})
 
 export default connect(
-    mapStateToProps
+    mapStateToProps, 
+    mapDispatchToProps
   )(Game)

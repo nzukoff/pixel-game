@@ -5,17 +5,19 @@ const initialState = {
     button_styles : [],
     score : 0, 
     percentage : 0,
-    chosen_place : 0
-  }
+    chosen_place : 0,
+    button_styles : [],
+    percentage: 0
+}
   
   const rootReducer = (state = initialState, action) => {
     switch (action.type) {
-    //   case 'ADD_VIDEO':
-    //     return({
-    //       ...state,
-    //       view: action.view,
-    //       updatedTitle: ''
-    //     })
+      case 'DO_INITIAL_FETCH_SUCCESS':
+        return({
+          ...state,
+          pixels: action.pixels,
+          image_size: action.image_size
+        })
 
       default:
         return (state)

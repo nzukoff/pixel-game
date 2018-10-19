@@ -68,8 +68,7 @@ def cluster_colors(n_clusters):
     color_options = kmeans.cluster_centers_.astype(int).tolist()
     return jsonify(color_options=color_options)
 
-@app.route('/choose/<choice>')
-# @cross_origin(allow_headers=['Content-Type'])
+@app.route('/choose/<choice>/')
 def choose_color(choice):
     global pix_labels
     global pix_list

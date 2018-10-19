@@ -1,8 +1,12 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+
 import ScoreBar from '../ScoreBar/ScoreBar'
 import './Display.css'
 
-class Button extends Component {
+import { doInitialFetch } from '../../actions/index'
+
+class Display extends Component {
     constructor(props) {
         super(props)
     }
@@ -30,13 +34,13 @@ class Button extends Component {
                     <div className="container">
                         <div className="row">                            
                             <div className="col">
-                                <button type="button" className="btn btn-secondary" onClick={() => {this.props.reset(5)}}>Easy</button>
+                                <button type="button" className="btn btn-secondary" onClick={() => {this.props.doInitialFetch('next', this.props.host, 5)}}>Easy</button>
                             </div>
                             <div className="col">
-                                <button type="button" className="btn btn-secondary" onClick={() => {this.props.reset(10)}}>Medium</button>
+                                <button type="button" className="btn btn-secondary" onClick={() => {this.props.doInitialFetch('next', this.props.host, 10)}}>Medium</button>
                             </div>
                             <div className="col">
-                                <button type="button" className="btn btn-secondary" onClick={() => {this.props.reset(15)}}>Hard</button>
+                                <button type="button" className="btn btn-secondary" onClick={() => {this.props.doInitialFetch('next', this.props.host, 15)}}>Hard</button>
                             </div>                       
                         </div>
                         <div className="row">
@@ -45,16 +49,27 @@ class Button extends Component {
                                 {
                                     this.props.chosenPlace ? <h3 className="score">{`Your guess was ${this.props.chosenPlace}${end} place`}</h3> : <div></div>
                                 }
-                                <ScoreBar percentage={this.props.percentage} />                        
+                                <ScoreBar />                        
                             </div>
                         </div>
-                        
                     </div>
-                    
                 </div>
             </div>
         );
     }
 }
 
-export default Button;
+const mapStateToProps = state => ({
+    host: state.host, 
+    chosenPlace: state.chosen_place, 
+    score: state.score
+})
+
+const mapDispatchToProps = dispatch => ({
+    doInitialFetch: (load_type, host, num_colors) => dispatch(doInitialFetch(load_type, host, num_colors))
+})
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(Display)

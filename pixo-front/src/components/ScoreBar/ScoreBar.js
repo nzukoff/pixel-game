@@ -10,7 +10,7 @@ class ScoreBar extends Component {
     render() {
         return (
             <div className="ScoreBar">
-                <Filler percentage={this.props.percentage} />
+                <Filler />
             </div>
         );
     }

@@ -9,9 +9,7 @@ class App extends Component {
     return (
       <div className="App">
         <div className="container">
-          {/* <Game host='https://pixel-game-api.herokuapp.com/'/> */}
-          <Game host='http://127.0.0.1:5000/'/> 
-          
+          <Game /> 
         </div>
       </div>
     );

@@ -1,4 +1,6 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+
 import './Filler.css'
 
 class Filler extends Component {
@@ -14,4 +16,11 @@ class Filler extends Component {
     }
 }
 
-export default Filler;
+const mapStateToProps = state => ({
+    percentage: state.percentage
+})
+
+export default connect(
+    mapStateToProps,
+    null
+)(Filler)

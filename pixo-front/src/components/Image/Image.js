@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux'
+
 import './Image.css' 
+
 class Image extends Component {
     constructor(props) {
         super(props)
@@ -34,4 +37,15 @@ class Image extends Component {
     }
 }
 
-export default Image;
+const mapStateToProps = state => ({
+    pixels: state.pixels,
+    imageSize: state.image_size
+})
+
+
+export default connect(
+    mapStateToProps,
+    null
+)(Image)
+
+// export default Image;

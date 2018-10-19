@@ -1,4 +1,7 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+
+import { chooseColor } from '../../actions/index'
 
 class Button extends Component {
     constructor(props) {
@@ -20,10 +23,22 @@ class Button extends Component {
         }
         return (
             <div className="Button">
-                <div style={buttonStyle} onClick={() => this.props.chooseColor(this.props.place)}></div>
+                <div style={buttonStyle} onClick={() => {this.props.chooseColor(this.props.host, this.props.place, this.props.image_size)}}></div>
             </div>
         );
     }
 }
 
-export default Button;
+const mapStateToProps = state => ({
+    host: state.host,
+    image_size: state.image_size
+})
+
+const mapDispatchToProps = dispatch => ({
+    chooseColor: (host, choice, image_size) => dispatch(chooseColor(host, choice, image_size))
+})
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(Button)

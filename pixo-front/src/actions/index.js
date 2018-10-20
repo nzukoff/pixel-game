@@ -2,7 +2,7 @@ import axios from 'axios'
 
 export const doInitialFetch = (load_type, host, num_colors) => {
     return async (dispatch) => {
-        const url = `${host}load/${load_type}`
+        const url = `${host}load/${load_type}/`
         const response = await axios.get(url)
         const pixels = response.data.pixel_values
         const image_size = response.data.image_size
@@ -19,7 +19,7 @@ export const doInitialFetchSuccess = (pixels, image_size) => ({
 
 export const getColorOptions = (host, num_colors, image_size) => {
     return async (dispatch) => {
-        const url = `${host}options/${num_colors}`
+        const url = `${host}options/${num_colors}/`
         const response = await axios.get(url)
         const color_options = response.data.color_options
         dispatch(getColorOptionsSuccess(color_options))
@@ -56,7 +56,7 @@ export const setButtonStyles = (choice, image_size, color_options) => {
 
 export const chooseColor = (host, choice, image_size) => {
     return async (dispatch) => {
-        const url = `${host}choose/${choice}`
+        const url = `${host}choose/${choice}/`
         const response = await axios.get(url)
         const pixels = response.data.pixel_values
         const color_options = response.data.color_options
